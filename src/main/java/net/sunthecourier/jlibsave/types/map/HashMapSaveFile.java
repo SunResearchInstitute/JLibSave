@@ -1,13 +1,12 @@
-package net.sunthecourier.jlibsave.types;
+package net.sunthecourier.jlibsave.types.map;
 
 import net.sunthecourier.jlibsave.SaveFile;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.Map;
 
-public class MapSaveFile<T, TK> extends SaveFile<Map<T, TK>> {
-    public MapSaveFile(File path, Map<T, TK> defaultValue) {
+public class HashMapSaveFile<T, TK> extends SaveFile<HashMap<T, TK>> {
+    public HashMapSaveFile(File path, HashMap<T, TK> defaultValue) {
         super(path, () -> {
             if (defaultValue != null) return defaultValue;
             else return new HashMap<>();
