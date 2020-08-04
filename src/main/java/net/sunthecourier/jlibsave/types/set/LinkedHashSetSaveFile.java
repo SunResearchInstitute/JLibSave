@@ -7,9 +7,6 @@ import java.util.LinkedHashSet;
 
 public class LinkedHashSetSaveFile<T> extends SaveFile<LinkedHashSet<T>> {
     public LinkedHashSetSaveFile(File path, LinkedHashSet<T> defaultValues) {
-        super(path, () -> {
-            if (defaultValues != null) return defaultValues;
-            else return new LinkedHashSet<>();
-        });
+        super(path, defaultValues != null ? defaultValues : new LinkedHashSet<>());
     }
 }

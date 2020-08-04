@@ -27,9 +27,9 @@ public class SaveController {
     }
 
 
-    public <T extends SaveFile<V>, V> T getCustomSave(String saveName) {
+    public ISaveFile getCustomSave(String saveName) {
         if (saveFiles.containsKey(saveName)) {
-            return (T) saveFiles.get(saveName);
+            return saveFiles.get(saveName);
         }
         return null;
     }

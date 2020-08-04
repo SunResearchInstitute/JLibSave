@@ -7,9 +7,6 @@ import java.util.LinkedHashMap;
 
 public class LinkedHashMapSaveFile<T, TK> extends SaveFile<LinkedHashMap<T, TK>> {
     public LinkedHashMapSaveFile(File path, LinkedHashMap<T, TK> defaultValue) {
-        super(path, () -> {
-            if (defaultValue != null) return defaultValue;
-            else return new LinkedHashMap<>();
-        });
+        super(path, defaultValue != null ? defaultValue : new LinkedHashMap<>());
     }
 }

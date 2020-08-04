@@ -2,7 +2,6 @@ package net.sunthecourier.jlibsave;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import lombok.Getter;
 
@@ -11,7 +10,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
-import java.util.function.Supplier;
 
 import static java.nio.file.StandardOpenOption.*;
 
@@ -20,23 +18,22 @@ public abstract class SaveFile<T> extends ISaveFile {
     protected T data;
 
     /**
-     * @param supplier If the class fails to read data from the JSON this will be used instead
+     * @param defaultData If the class fails to read data from the JSON this will be used instead
      */
-    public SaveFile(File path, Supplier<T> supplier) {
+    public SaveFile(File path, T defaultData) {
         super(path);
         try {
             if (path.exists()) {
                 JsonReader reader = new JsonReader(new FileReader(this.getSaveInfo()));
                 Gson gson = new Gson();
-                data = gson.fromJson(reader, new TypeToken<T>() {
-                }.getType());
+                data = gson.fromJson(reader, defaultData.getClass());
                 if (data != null) {
                     return;
                 }
             }
-            data = supplier.get();
+            data = defaultData;
         } catch (Exception e) {
-            data = supplier.get();
+            data = defaultData;
         }
     }
 
