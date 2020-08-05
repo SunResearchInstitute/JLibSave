@@ -15,7 +15,6 @@ import java.util.LinkedHashSet;
 public class SaveController {
     @Getter
     private final File saveDirectory;
-
     @Getter
     private final HashMap<String, ISaveFile> saveFiles;
 
@@ -49,7 +48,11 @@ public class SaveController {
     public void saveAll(boolean clean) {
         saveFiles.forEach((s, saveFile) -> saveFile.write());
         if (clean)
-            saveFiles.clear();
+            clearSaveFiles();
+    }
+
+    public void clearSaveFiles() {
+        saveFiles.clear();
     }
 
     public <T> HashSetSaveFile<T> getHashSetSave(String saveName) {

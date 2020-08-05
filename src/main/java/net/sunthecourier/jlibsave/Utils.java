@@ -12,9 +12,7 @@ public class Utils {
         if (!(dir.exists())) {
             dir.mkdir();
         }
-
         return dir;
-
     }
 
     public static File getFile(File folder, String file) {
