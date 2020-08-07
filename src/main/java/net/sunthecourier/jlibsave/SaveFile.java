@@ -8,6 +8,7 @@ import lombok.Getter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 
@@ -18,23 +19,12 @@ public abstract class SaveFile<T> extends ISaveFile {
     protected T data;
 
     /**
-     * @param defaultData If the class fails to read data from the JSON this will be used instead
+     * @param fallbackData If the class fails to read data from the JSON this will be used instead
      */
-    public SaveFile(File path, T defaultData) {
-        super(path);
-        try {
-            if (path.exists()) {
-                JsonReader reader = new JsonReader(new FileReader(this.getSaveInfo()));
-                Gson gson = new Gson();
-                data = gson.fromJson(reader, defaultData.getClass());
-                if (data != null) {
-                    return;
-                }
-            }
-            data = defaultData;
-        } catch (Exception e) {
-            data = defaultData;
-        }
+    public SaveFile(File path, T fallbackData, Type typeToken) {
+        super(path, typeToken);
+        data = loadData(fallbackData);
+        write();
     }
 
     @Override
@@ -44,9 +34,36 @@ public abstract class SaveFile<T> extends ISaveFile {
         Gson gson = gsonBuilder.create();
         OpenOption[] options = new OpenOption[]{WRITE, CREATE, TRUNCATE_EXISTING};
         try {
-            Files.write(this.saveInfo.toPath(), gson.toJson(data).getBytes(), options);
+            Files.write(this.saveInfo.toPath(), gson.toJson(data, type).getBytes(), options);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void reload() {
+        data = loadData(null);
+    }
+
+    public void reload(T fallbackData) {
+        data = loadData(fallbackData);
+    }
+
+    private T loadData(T defaultData) {
+        T result;
+        try {
+            if (getSaveInfo().exists()) {
+                JsonReader reader = new JsonReader(new FileReader(this.getSaveInfo()));
+                Gson gson = new Gson();
+                result = gson.fromJson(reader, type);
+                if (result != null) {
+                    return result;
+                }
+            }
+            result = defaultData;
+        } catch (Exception e) {
+            result = defaultData;
+        }
+        return result;
     }
 }
