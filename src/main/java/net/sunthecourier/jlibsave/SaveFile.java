@@ -1,7 +1,5 @@
 package net.sunthecourier.jlibsave;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import lombok.Getter;
 
@@ -13,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.OpenOption;
 
 import static java.nio.file.StandardOpenOption.*;
+import static net.sunthecourier.jlibsave.Utils.PRETTY_GSON;
 
 public abstract class SaveFile<T> extends ISaveFile {
     @Getter
@@ -28,13 +27,15 @@ public abstract class SaveFile<T> extends ISaveFile {
     }
 
     @Override
+    public void writeAsync() {
+        new Thread(this::write).start();
+    }
+
+    @Override
     public void write() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setPrettyPrinting();
-        Gson gson = gsonBuilder.create();
         OpenOption[] options = new OpenOption[]{WRITE, CREATE, TRUNCATE_EXISTING};
         try {
-            Files.write(this.saveInfo.toPath(), gson.toJson(data, type).getBytes(), options);
+            Files.write(this.saveInfo.toPath(), PRETTY_GSON.toJson(data, type).getBytes(), options);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,8 +55,7 @@ public abstract class SaveFile<T> extends ISaveFile {
         try {
             if (getSaveInfo().exists()) {
                 JsonReader reader = new JsonReader(new FileReader(this.getSaveInfo()));
-                Gson gson = new Gson();
-                result = gson.fromJson(reader, type);
+                result = PRETTY_GSON.fromJson(reader, type);
                 if (result != null) {
                     return result;
                 }

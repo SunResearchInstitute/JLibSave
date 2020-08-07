@@ -16,7 +16,7 @@ public abstract class ISaveFile {
         saveInfo = path;
         type = typeToken;
     }
-
+    public abstract void writeAsync();
     public abstract void write();
     public abstract void reload();
 }
