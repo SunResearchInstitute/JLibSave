@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class ISaveFile {
     @Getter
@@ -16,7 +17,12 @@ public abstract class ISaveFile {
         saveInfo = path;
         type = typeToken;
     }
+
     public abstract void writeAsync();
+
     public abstract void write();
+
     public abstract void reload();
+
+    public abstract CompletableFuture<Void> reloadAsync();
 }

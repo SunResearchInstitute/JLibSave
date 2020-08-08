@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import static java.nio.file.StandardOpenOption.*;
 import static net.sunthecourier.jlibsave.Utils.PRETTY_GSON;
@@ -20,15 +22,9 @@ public abstract class SaveFile<T> extends ISaveFile {
     /**
      * @param fallbackData If the class fails to read data from the JSON this will be used instead
      */
-    public SaveFile(File path, T fallbackData, Type typeToken) {
+    public SaveFile(File path, Supplier<T> fallbackData, Type typeToken) {
         super(path, typeToken);
         data = loadData(fallbackData);
-        write();
-    }
-
-    @Override
-    public void writeAsync() {
-        new Thread(this::write).start();
     }
 
     @Override
@@ -42,15 +38,29 @@ public abstract class SaveFile<T> extends ISaveFile {
     }
 
     @Override
-    public void reload() {
-        data = loadData(null);
+    public void writeAsync() {
+        new Thread(this::write).start();
     }
 
-    public void reload(T fallbackData) {
+    @Override
+    public void reload() {
+        reload(null);
+    }
+
+    public void reload(Supplier<T> fallbackData) {
         data = loadData(fallbackData);
     }
 
-    private T loadData(T defaultData) {
+    @Override
+    public CompletableFuture<Void> reloadAsync() {
+        return reloadAsync(null);
+    }
+
+    public CompletableFuture<Void> reloadAsync(Supplier<T> defaultData) {
+        return CompletableFuture.runAsync(() -> reload(defaultData));
+    }
+
+    private T loadData(Supplier<T> defaultData) {
         T result;
         try {
             if (getSaveInfo().exists()) {
@@ -60,9 +70,11 @@ public abstract class SaveFile<T> extends ISaveFile {
                     return result;
                 }
             }
-            result = defaultData;
+            result = defaultData.get();
+            write();
         } catch (Exception e) {
-            result = defaultData;
+            result = defaultData.get();
+            write();
         }
         return result;
     }

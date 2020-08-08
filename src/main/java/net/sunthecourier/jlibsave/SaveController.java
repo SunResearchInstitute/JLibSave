@@ -19,9 +19,9 @@ public class SaveController {
     }
 
 
-    public ISaveFile getSave(String saveName) {
+    public <T extends ISaveFile> T getSave(String saveName) {
         if (saveFiles.containsKey(saveName)) {
-            return saveFiles.get(saveName);
+            return (T) saveFiles.get(saveName);
         }
         return null;
     }
@@ -30,8 +30,8 @@ public class SaveController {
         saveFiles.put(saveName, saveFile);
     }
 
-    public ISaveFile removeSave(String saveName) {
-        return saveFiles.remove(saveName);
+    public <T extends ISaveFile> T removeSave(String saveName) {
+        return (T) saveFiles.remove(saveName);
     }
 
     public void saveAll() {
