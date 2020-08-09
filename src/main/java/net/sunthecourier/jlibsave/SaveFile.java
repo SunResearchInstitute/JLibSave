@@ -38,8 +38,8 @@ public abstract class SaveFile<T> extends ISaveFile {
     }
 
     @Override
-    public void writeAsync() {
-        new Thread(this::write).start();
+    public CompletableFuture<Void> writeAsync() {
+        return CompletableFuture.runAsync(this::write);
     }
 
     @Override
@@ -49,15 +49,6 @@ public abstract class SaveFile<T> extends ISaveFile {
 
     public void reload(Supplier<T> fallbackData) {
         data = loadData(fallbackData);
-    }
-
-    @Override
-    public CompletableFuture<Void> reloadAsync() {
-        return reloadAsync(null);
-    }
-
-    public CompletableFuture<Void> reloadAsync(Supplier<T> defaultData) {
-        return CompletableFuture.runAsync(() -> reload(defaultData));
     }
 
     private T loadData(Supplier<T> defaultData) {

@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 
 public class SaveController {
     @Getter
@@ -35,13 +36,21 @@ public class SaveController {
     }
 
     public void saveAll() {
-        saveAll(true);
+        saveAll(false);
     }
 
     public void saveAll(boolean clean) {
         saveFiles.forEach((s, saveFile) -> saveFile.write());
         if (clean)
             clearSaveFiles();
+    }
+
+    public CompletableFuture<Void> saveAllAsync() {
+        return saveAllAsync(false);
+    }
+
+    public CompletableFuture<Void> saveAllAsync(boolean clean) {
+        return CompletableFuture.runAsync(() -> saveAll(clean));
     }
 
     public void clearSaveFiles() {

@@ -18,11 +18,9 @@ public abstract class ISaveFile {
         type = typeToken;
     }
 
-    public abstract void writeAsync();
-
     public abstract void write();
 
-    public abstract void reload();
+    public abstract CompletableFuture<Void> writeAsync();
 
-    public abstract CompletableFuture<Void> reloadAsync();
+    public abstract void reload();
 }
