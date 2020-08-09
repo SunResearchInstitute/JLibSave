@@ -1,4 +1,4 @@
-package net.sunthecourier.jlibsave;
+package net.sunthecourier.jlibsave.types.saves;
 
 import lombok.Getter;
 
