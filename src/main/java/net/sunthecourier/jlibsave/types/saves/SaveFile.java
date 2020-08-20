@@ -25,6 +25,7 @@ public abstract class SaveFile<T> extends ISaveFile {
     public SaveFile(File path, Supplier<T> fallbackData, Type typeToken) {
         super(path, typeToken);
         data = loadData(fallbackData);
+        write();
     }
 
     @Override
@@ -49,6 +50,7 @@ public abstract class SaveFile<T> extends ISaveFile {
 
     public void reload(Supplier<T> fallbackData) {
         data = loadData(fallbackData);
+        write();
     }
 
     private T loadData(Supplier<T> defaultData) {
@@ -62,10 +64,8 @@ public abstract class SaveFile<T> extends ISaveFile {
                 }
             }
             result = defaultData.get();
-            write();
         } catch (Exception e) {
             result = defaultData.get();
-            write();
         }
         return result;
     }
