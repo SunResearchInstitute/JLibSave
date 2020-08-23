@@ -58,7 +58,7 @@ public class SaveController {
     }
 
     public <T> void registerLinkedHashSetSave(String saveName, Type LinkedHashSetType) {
-        registerHashSetSave(saveName, LinkedHashSet::new, LinkedHashSetType);
+        registerLinkedHashSetSave(saveName, LinkedHashSet::new, LinkedHashSetType);
     }
 
     public <T extends ISaveFile> T getSave(String saveName) {
