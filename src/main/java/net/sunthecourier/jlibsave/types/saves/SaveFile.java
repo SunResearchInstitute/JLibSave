@@ -1,7 +1,10 @@
 package net.sunthecourier.jlibsave.types.saves;
 
+import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import lombok.Getter;
+import net.sunthecourier.jlibsave.SaveController;
+import net.sunthecourier.jlibsave.Utils;
 
 import java.io.File;
 import java.io.FileReader;
@@ -13,14 +16,15 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 import static java.nio.file.StandardOpenOption.*;
-import static net.sunthecourier.jlibsave.Utils.PRETTY_GSON;
 
 public abstract class SaveFile<T> extends ISaveFile {
 	@Getter
 	protected T data;
 
 	/**
+	 * @param path         Path of save. Can be found using {@link SaveController#getSavePath(String)}.
 	 * @param fallbackData If the class fails to read data from the JSON this will be used instead
+	 * @param typeToken    The type token including the Save. Best gotten using {@link TypeToken}.
 	 */
 	public SaveFile(File path, Supplier<T> fallbackData, Type typeToken) {
 		super(path, typeToken);
@@ -32,7 +36,7 @@ public abstract class SaveFile<T> extends ISaveFile {
 	public void write() {
 		OpenOption[] options = new OpenOption[]{WRITE, CREATE, TRUNCATE_EXISTING};
 		try {
-			Files.write(this.saveInfo.toPath(), PRETTY_GSON.toJson(data, type).getBytes(), options);
+			Files.write(this.saveInfo.toPath(), Utils.getPrettyGson().toJson(data, type).getBytes(), options);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +62,7 @@ public abstract class SaveFile<T> extends ISaveFile {
 		try {
 			if (getSaveInfo().exists()) {
 				JsonReader reader = new JsonReader(new FileReader(this.getSaveInfo()));
-				result = PRETTY_GSON.fromJson(reader, type);
+				result = Utils.getPrettyGson().fromJson(reader, type);
 				if (result != null) {
 					return result;
 				}
