@@ -6,7 +6,7 @@
 
     <groupId>net.sunthecourier</groupId>
     <artifactId>jlibsave</artifactId>
-    <version>1.0.3</version>
+    <version>1.1.0</version>
 
     <properties>
         <project.java.version>1.8</project.java.version>

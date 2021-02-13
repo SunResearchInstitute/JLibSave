@@ -27,7 +27,11 @@ public abstract class SaveFile<T> extends ISaveFile {
 	 * @param typeToken    The type token including the Save. Best gotten using {@link TypeToken}.
 	 */
 	public SaveFile(File path, Supplier<T> fallbackData, Type typeToken) {
-		super(path, typeToken);
+		this(path, fallbackData, typeToken, false);
+	}
+
+	public SaveFile(File path, Supplier<T> fallbackData, Type typeToken, boolean isConfig) {
+		super(path, typeToken, false);
 		data = loadData(fallbackData);
 		write();
 	}

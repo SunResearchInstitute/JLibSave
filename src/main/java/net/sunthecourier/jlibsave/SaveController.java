@@ -81,7 +81,10 @@ public class SaveController {
 	}
 
 	public void saveAll(boolean clean) {
-		saveFiles.forEach((s, saveFile) -> saveFile.write());
+		saveFiles.forEach((s, saveFile) -> {
+			if (!saveFile.isConfig())
+				saveFile.write();
+		});
 		if (clean)
 			clearSaveFiles();
 	}
