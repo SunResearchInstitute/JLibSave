@@ -3,7 +3,6 @@ package net.sunthecourier.jlibsave.types.saves.map;
 
 import com.google.gson.reflect.TypeToken;
 import net.sunthecourier.jlibsave.SaveController;
-import net.sunthecourier.jlibsave.Utils;
 import net.sunthecourier.jlibsave.types.saves.SaveFile;
 
 import java.io.File;
