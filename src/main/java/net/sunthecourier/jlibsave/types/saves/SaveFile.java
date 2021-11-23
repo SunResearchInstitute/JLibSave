@@ -32,7 +32,7 @@ public abstract class SaveFile<T> extends ISaveFile {
 
 	public SaveFile(File path, Supplier<T> fallbackData, Type typeToken, boolean isConfig) {
 		super(path, typeToken, false);
-		data = loadData(fallbackData);
+		loadData(fallbackData);
 		write();
 	}
 
@@ -57,24 +57,23 @@ public abstract class SaveFile<T> extends ISaveFile {
 	}
 
 	public void reload(Supplier<T> fallbackData) {
-		data = loadData(fallbackData);
+		loadData(fallbackData);
 		write();
 	}
 
-	private T loadData(Supplier<T> defaultData) {
-		T result;
+	private void loadData(Supplier<T> defaultData) {
+		T res;
 		try {
 			if (getSaveInfo().exists()) {
 				JsonReader reader = new JsonReader(new FileReader(this.getSaveInfo()));
-				result = Utils.getPrettyGson().fromJson(reader, type);
-				if (result != null) {
-					return result;
+				res = Utils.getPrettyGson().fromJson(reader, type);
+				if (res != null) {
+					data = res;
 				}
 			}
-			result = defaultData.get();
+			data = defaultData.get();
 		} catch (Exception e) {
-			result = defaultData.get();
+			data = defaultData.get();
 		}
-		return result;
 	}
 }

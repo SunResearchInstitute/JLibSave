@@ -101,6 +101,10 @@ public class SaveController {
 		saveFiles.clear();
 	}
 
+	public void reloadAll() {
+		saveFiles.forEach((s, iSaveFile) -> iSaveFile.reload());
+	}
+
 	public File getSavePath(String saveName) {
 		return Utils.getFile(saveDirectory, saveName);
 	}
